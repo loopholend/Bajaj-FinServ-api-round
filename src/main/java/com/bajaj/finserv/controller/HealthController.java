@@ -4,11 +4,14 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.Collections;
+import java.util.Map;
+
 @RestController
 public class HealthController {
 
     @GetMapping("/health")
-    public ResponseEntity<String> getHealth() {
-        return ResponseEntity.ok("{\"status\": \"healthy\"}");
+    public ResponseEntity<Map<String, String>> getHealth() {
+        return ResponseEntity.ok(Collections.singletonMap("status", "healthy"));
     }
 }

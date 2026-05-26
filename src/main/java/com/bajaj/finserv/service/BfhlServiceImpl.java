@@ -40,76 +40,71 @@ public class BfhlServiceImpl implements BfhlService {
 
         response.setSuccess(true);
 
-        List<String> oddNumbers = new ArrayList<>();
-        List<String> evenNumbers = new ArrayList<>();
-        List<String> alphabets = new ArrayList<>();
-        List<String> specialCharacters = new ArrayList<>();
-        int sum = 0;
+        List<String> odd = new ArrayList<>();
+        List<String> even = new ArrayList<>();
+        List<String> alpha = new ArrayList<>();
+        List<String> special = new ArrayList<>();
+        int totalSum = 0;
 
-        // separate each element into its category
-        for (String item : data) {
-            if (item == null || item.isEmpty()) continue;
+        // Group inputs into respective categories
+        for (String val : data) {
+            if (val == null || val.trim().isEmpty()) {
+                continue;
+            }
 
-            if (item.matches("\\d+")) {
-                // its a number
-                int num = Integer.parseInt(item);
-                sum += num;
+            if (val.matches("\\d+")) {
+                int num = Integer.parseInt(val);
+                totalSum += num;
                 if (num % 2 == 0) {
-                    evenNumbers.add(item);
+                    even.add(val);
                 } else {
-                    oddNumbers.add(item);
+                    odd.add(val);
                 }
-            } else if (item.matches("[a-zA-Z]+")) {
-                // its alphabetical
-                alphabets.add(item.toUpperCase());
+            } else if (val.matches("[a-zA-Z]+")) {
+                alpha.add(val.toUpperCase());
             } else {
-                // special character or mixed
-                specialCharacters.add(item);
+                special.add(val);
             }
         }
 
-        response.setOddNumbers(oddNumbers);
-        response.setEvenNumbers(evenNumbers);
-        response.setAlphabets(alphabets);
-        response.setSpecialCharacters(specialCharacters);
-        response.setSum(String.valueOf(sum));
+        response.setOddNumbers(odd);
+        response.setEvenNumbers(even);
+        response.setAlphabets(alpha);
+        response.setSpecialCharacters(special);
+        response.setSum(String.valueOf(totalSum));
 
-        // build concat_string
-        // 1. collect all individual alpha chars from alphabetical elements
-        // 2. reverse the order
-        // 3. alternating caps (upper, lower, upper, lower...)
-        response.setConcatString(buildConcatString(data));
+        // Generate the reversed alternating-caps string
+        response.setConcatString(generateConcatString(data));
 
         return response;
     }
 
-    private String buildConcatString(List<String> data) {
-        List<Character> allChars = new ArrayList<>();
+    private String generateConcatString(List<String> data) {
+        StringBuilder chars = new StringBuilder();
 
-        for (String item : data) {
-            if (item == null) continue;
-            if (item.matches("[a-zA-Z]+")) {
-                for (char c : item.toCharArray()) {
-                    allChars.add(c);
-                }
+        for (String val : data) {
+            if (val != null && val.matches("[a-zA-Z]+")) {
+                chars.append(val);
             }
         }
 
-        if (allChars.isEmpty()) return "";
+        if (chars.length() == 0) {
+            return "";
+        }
 
-        // reverse
-        Collections.reverse(allChars);
+        // Reverse the accumulated alphabetical characters
+        chars.reverse();
 
-        // alternating caps starting with uppercase
-        StringBuilder sb = new StringBuilder();
-        for (int i = 0; i < allChars.size(); i++) {
-            char c = allChars.get(i);
+        // Convert to alternating case (Upper, lower, Upper, lower...)
+        StringBuilder result = new StringBuilder();
+        for (int i = 0; i < chars.length(); i++) {
+            char c = chars.charAt(i);
             if (i % 2 == 0) {
-                sb.append(Character.toUpperCase(c));
+                result.append(Character.toUpperCase(c));
             } else {
-                sb.append(Character.toLowerCase(c));
+                result.append(Character.toLowerCase(c));
             }
         }
-        return sb.toString();
+        return result.toString();
     }
 }
