@@ -6,7 +6,7 @@ import java.util.List;
 public class BfhlResponse {
 
     @JsonProperty("is_success")
-    private boolean isSuccess;
+    private boolean success;
 
     @JsonProperty("user_id")
     private String userId;
@@ -32,8 +32,8 @@ public class BfhlResponse {
     @JsonProperty("concat_string")
     private String concatString;
 
-    public boolean isSuccess() { return isSuccess; }
-    public void setSuccess(boolean success) { isSuccess = success; }
+    public boolean isSuccess() { return success; }
+    public void setSuccess(boolean success) { this.success = success; }
 
     public String getUserId() { return userId; }
     public void setUserId(String userId) { this.userId = userId; }
