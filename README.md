@@ -1,41 +1,31 @@
-# Bajaj Finserv Health - Qualifier 1 (JAVA)
+# Bajaj Finserv Health - REST API Round
 
-Spring Boot app for the Bajaj Finserv Health hiring qualifier.
+Spring Boot REST API for the Bajaj Finserv Health qualifier.
 
-## How to run
+## How to run locally
 
-Make sure you have Java 17 and Maven installed.
-
-```
-mvn clean package -DskipTests
-java -jar target/bajaj-finserv-1.0.0.jar
-```
-
-Or directly:
 ```
 mvn spring-boot:run
 ```
 
-## JAR file
+API will be available at `http://localhost:8080/bfhl`
 
-The final JAR is included in the repo root: `bajaj-finserv.jar`
+## API
 
-Download link: `https://github.com/<your-username>/<repo-name>/raw/main/bajaj-finserv.jar`
+**POST /bfhl** - processes the input data array and returns categorized results
 
-## What it does
+Example request:
+```json
+{
+  "data": ["a", "1", "334", "4", "R", "$"]
+}
+```
 
-When the app starts up it automatically:
-1. Sends a POST request to the generateWebhook API with my details
-2. Gets back a webhook URL and access token
-3. Sends the SQL query solution to testWebhook API with the token in Authorization header
+**GET /bfhl** - returns operation code
 
-No controller or manual trigger needed - everything runs on startup using CommandLineRunner.
+## Deploy
 
-## SQL Query
-
-The query solves Question 1 (my regNo 0827CS231185 ends in 85 which is odd).
-
-It finds the highest salary that was not credited on the 1st of any month, along with employee name, age, and department.
+Push to Railway/Render and it will auto-detect Maven + the Procfile.
 
 ## Author
 Pranjal Pal - 0827CS231185
