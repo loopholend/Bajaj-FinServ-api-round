@@ -4,7 +4,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.Collections;
+import java.util.HashMap;
 import java.util.Map;
 
 @RestController
@@ -12,6 +12,8 @@ public class HealthController {
 
     @GetMapping("/health")
     public ResponseEntity<Map<String, String>> getHealth() {
-        return ResponseEntity.ok(Collections.singletonMap("status", "healthy"));
+        Map<String, String> statusMap = new HashMap<>();
+        statusMap.put("status", "healthy");
+        return ResponseEntity.ok(statusMap);
     }
 }

@@ -23,16 +23,19 @@ public class BfhlServiceImpl implements BfhlService {
     @Override
     public BfhlResponse processData(List<String> data) {
         BfhlResponse response = new BfhlResponse();
+        
+        // Setting student details from application.properties
         response.setUserId(userId);
         response.setEmail(email);
         response.setRollNumber(regNo);
 
+        // Validation for empty or null list
         if (data == null || data.isEmpty()) {
             response.setSuccess(false);
-            response.setOddNumbers(Collections.emptyList());
-            response.setEvenNumbers(Collections.emptyList());
-            response.setAlphabets(Collections.emptyList());
-            response.setSpecialCharacters(Collections.emptyList());
+            response.setOddNumbers(new ArrayList<>());
+            response.setEvenNumbers(new ArrayList<>());
+            response.setAlphabets(new ArrayList<>());
+            response.setSpecialCharacters(new ArrayList<>());
             response.setSum("0");
             response.setConcatString("");
             return response;
@@ -40,71 +43,81 @@ public class BfhlServiceImpl implements BfhlService {
 
         response.setSuccess(true);
 
-        List<String> odd = new ArrayList<>();
-        List<String> even = new ArrayList<>();
-        List<String> alpha = new ArrayList<>();
-        List<String> special = new ArrayList<>();
-        int totalSum = 0;
+        List<String> oddNumbers = new ArrayList<>();
+        List<String> evenNumbers = new ArrayList<>();
+        List<String> alphabets = new ArrayList<>();
+        List<String> specialChars = new ArrayList<>();
+        int sumOfNumbers = 0;
 
-        // Group inputs into respective categories
-        for (String val : data) {
-            if (val == null || val.trim().isEmpty()) {
+        // Loop through the input array and categorize each item
+        for (String item : data) {
+            if (item == null || item.trim().isEmpty()) {
                 continue;
             }
 
-            if (val.matches("\\d+")) {
-                int num = Integer.parseInt(val);
-                totalSum += num;
-                if (num % 2 == 0) {
-                    even.add(val);
+            // Check if the item is a number
+            if (item.matches("\\d+")) {
+                int number = Integer.parseInt(item);
+                sumOfNumbers += number;
+                
+                if (number % 2 == 0) {
+                    evenNumbers.add(item);
                 } else {
-                    odd.add(val);
+                    oddNumbers.add(item);
                 }
-            } else if (val.matches("[a-zA-Z]+")) {
-                alpha.add(val.toUpperCase());
-            } else {
-                special.add(val);
+            } 
+            // Check if the item is alphabetic (single or multiple letters)
+            else if (item.matches("[a-zA-Z]+")) {
+                alphabets.add(item.toUpperCase());
+            } 
+            // If it is a special character or mixed
+            else {
+                specialChars.add(item);
             }
         }
 
-        response.setOddNumbers(odd);
-        response.setEvenNumbers(even);
-        response.setAlphabets(alpha);
-        response.setSpecialCharacters(special);
-        response.setSum(String.valueOf(totalSum));
+        response.setOddNumbers(oddNumbers);
+        response.setEvenNumbers(evenNumbers);
+        response.setAlphabets(alphabets);
+        response.setSpecialCharacters(specialChars);
+        response.setSum(String.valueOf(sumOfNumbers));
 
-        // Generate the reversed alternating-caps string
-        response.setConcatString(generateConcatString(data));
+        // Logic for reversing and alternating caps for alphabetic characters
+        String concatenatedString = getReversedAlternatingCaps(data);
+        response.setConcatString(concatenatedString);
 
         return response;
     }
 
-    private String generateConcatString(List<String> data) {
-        StringBuilder chars = new StringBuilder();
+    // Helper method to extract, reverse and alternate caps of alphabet characters
+    private String getReversedAlternatingCaps(List<String> data) {
+        StringBuilder lettersOnly = new StringBuilder();
 
-        for (String val : data) {
-            if (val != null && val.matches("[a-zA-Z]+")) {
-                chars.append(val);
+        // Extract all alphabetical characters
+        for (String item : data) {
+            if (item != null && item.matches("[a-zA-Z]+")) {
+                lettersOnly.append(item);
             }
         }
 
-        if (chars.length() == 0) {
+        if (lettersOnly.length() == 0) {
             return "";
         }
 
-        // Reverse the accumulated alphabetical characters
-        chars.reverse();
+        // Reverse the letters
+        String reversed = lettersOnly.reverse().toString();
 
-        // Convert to alternating case (Upper, lower, Upper, lower...)
+        // Convert to alternating case starting with uppercase
         StringBuilder result = new StringBuilder();
-        for (int i = 0; i < chars.length(); i++) {
-            char c = chars.charAt(i);
+        for (int i = 0; i < reversed.length(); i++) {
+            char ch = reversed.charAt(i);
             if (i % 2 == 0) {
-                result.append(Character.toUpperCase(c));
+                result.append(Character.toUpperCase(ch));
             } else {
-                result.append(Character.toLowerCase(c));
+                result.append(Character.toLowerCase(ch));
             }
         }
+        
         return result.toString();
     }
 }
